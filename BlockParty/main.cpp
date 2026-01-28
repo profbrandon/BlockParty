@@ -4,8 +4,6 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "blockparty.h"
-
 #define DEFAULT_WIDTH	1000
 #define DEFAULT_HEIGHT	600
 #define APP_NAME        "Block Party"
