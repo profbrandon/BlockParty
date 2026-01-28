@@ -1,61 +1,50 @@
 
 #include <iostream>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "Window.h"
+#include "Shader.h"
 
 #define DEFAULT_WIDTH	1000
 #define DEFAULT_HEIGHT	600
 #define APP_NAME        "Block Party"
 
+void a_key();
 
-GLFWwindow* initializeGLFWWindow();
-
+void iteration();
 
 int main()
 {
-	GLFWwindow* window = initializeGLFWWindow();
+	Window* window = Window::initializeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, APP_NAME);
 
+	if (window == nullptr) 
+		return EXIT_FAILURE; 
 
-	glfwTerminate();
+	Shader* vertexShader   = Shader::buildShader("vertex.glsl", GL_VERTEX_SHADER);
+	Shader* fragmentShader = Shader::buildShader("fragment.glsl", GL_FRAGMENT_SHADER);
+
+	if (vertexShader == NULL || fragmentShader == NULL)
+	{
+		delete window;
+		return EXIT_FAILURE;
+	}
+
+	window->bindKeyPress(GLFW_KEY_A, 0.1f, a_key);
+
+	window->bindLoopFunction(iteration);
+	window->enterLoop();
+
+	delete window;
 	return EXIT_SUCCESS;
 }
 
 
-GLFWwindow* initializeGLFWWindow()
+void a_key()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	std::cout << "Pressed: A" << std::endl;
+}
 
-	GLFWwindow* window =
-		glfwCreateWindow(
-			DEFAULT_WIDTH,
-			DEFAULT_HEIGHT,
-			APP_NAME,
-			NULL,			// No monitor
-			NULL			// No sharing
-		);
 
-	if (window == NULL)
-	{
-		std::cerr << "Failed to create GLFW window." << std::endl;
+void iteration()
+{
 
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
-	glfwMakeContextCurrent(window);
-
-	bool loadedCorrectly = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-	
-	if (!loadedCorrectly)
-	{
-		std::cerr << "Failed to load procedure loading function 'glfwGetProcAddress'" << std::endl;
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
-	return window;
 }
