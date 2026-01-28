@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BlockParty/BlockParty.vcxproj.filters
+/BlockParty/BlockParty.vcxproj
+/.gitignore
