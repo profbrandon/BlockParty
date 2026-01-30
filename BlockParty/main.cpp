@@ -8,7 +8,6 @@
 #define DEFAULT_HEIGHT	600
 #define APP_NAME        "Block Party"
 
-void a_key();
 
 void iteration();
 
@@ -25,22 +24,18 @@ int main()
 	if (vertexShader == NULL || fragmentShader == NULL)
 	{
 		delete window;
+		delete vertexShader;
+		delete fragmentShader;
 		return EXIT_FAILURE;
 	}
-
-	window->bindKeyPress(GLFW_KEY_A, 0.1f, a_key);
 
 	window->bindLoopFunction(iteration);
 	window->enterLoop();
 
 	delete window;
+	delete vertexShader;
+	delete fragmentShader;
 	return EXIT_SUCCESS;
-}
-
-
-void a_key()
-{
-	std::cout << "Pressed: A" << std::endl;
 }
 
 

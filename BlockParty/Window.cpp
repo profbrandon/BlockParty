@@ -4,6 +4,13 @@
 #include <iostream>
 
 
+
+void doNothing()
+{
+
+}
+
+
 Window::Window(GLFWwindow* window)
 	: window(window)
 {
@@ -39,14 +46,23 @@ void Window::bindKeyPress(unsigned int keyCode, double wait, void (*onPress)())
 
 	const double currentTime = glfwGetTime();
 
-	this->keyInfoMap[keyCode]  = { wait, currentTime, currentTime };
-	this->keyPressMap[keyCode] = onPress;
+	KeyInfo* keyInfo = &this->keyInfoMap[keyCode];
+
+	keyInfo->waitPress   = wait;
+	keyInfo->onPress     = onPress;
 }
 
 
 void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)(void))
 {
+	this->keys.push_back(keyCode);
 
+	const double currentTime = glfwGetTime();
+
+	KeyInfo* keyInfo = &this->keyInfoMap[keyCode];
+
+	keyInfo->waitRelease = wait;
+	keyInfo->onRelease   = onRelease;
 }
 
 
@@ -74,18 +90,36 @@ void Window::processInputs()
 
 	for (unsigned int keyCode : this->keys)
 	{
-		if (glfwGetKey(this->window, keyCode) == GLFW_PRESS)
-		{
-			KeyInfo* keyInfo = &this->keyInfoMap[keyCode];
+		int keyStatus = glfwGetKey(this->window, keyCode);
 
-			if (currentTime - keyInfo->lastPress > keyInfo->wait)
+		KeyInfo* keyInfo = &this->keyInfoMap[keyCode];
+
+		switch (keyStatus)
+		{
+		case GLFW_PRESS:
+			if (keyInfo->onPress == nullptr)
+				break;
+
+			if (currentTime - keyInfo->lastPress > keyInfo->waitPress)
 			{
 				keyInfo->lastPress = currentTime;
-				keyPressMap[keyCode]();
+				keyInfo->onPress();
+			}
+			break;
+
+		case GLFW_RELEASE:
+			if (keyInfo->onRelease == nullptr)
+				break;
+
+			if (currentTime - keyInfo->lastRelease > keyInfo->waitRelease)
+			{
+				keyInfo->lastRelease = currentTime;
+				keyInfo->onRelease();
 			}
 		}
 	}
 }
+
 
 Window* Window::initializeWindow(int width, int height, const char* name)
 {
@@ -125,6 +159,7 @@ Window* Window::initializeWindow(int width, int height, const char* name)
 
 	return new Window(window);
 }
+
 
 Window::~Window()
 {

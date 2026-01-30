@@ -8,11 +8,11 @@
 
 
 Model::Model(
-	float*       vertices,
-	unsigned int v_size,
-	float*       indices,
-	unsigned int i_size,
-	unsigned int shaderProgram)
+	float*        vertices,
+	unsigned int  v_size,
+	unsigned int* indices,
+	unsigned int  i_size,
+	unsigned int  shaderProgram)
 	: i_size(i_size), shaderProgram(shaderProgram)
 {
 	// Build vertex array object

@@ -11,11 +11,11 @@ private:
 
 public:
 	Model(
-		float*       vertices,
-		unsigned int v_size,
-		float*       indices,
-		unsigned int i_size,
-		unsigned int shaderProgram
+		float*        vertices,
+		unsigned int  v_size,
+		unsigned int* indices,
+		unsigned int  i_size,
+		unsigned int  shaderProgram
 	);
 
 	unsigned int getVertexArrayObject();

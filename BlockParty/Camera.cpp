@@ -39,6 +39,20 @@ void Camera::addYaw(float radians)
 }
 
 
+void Camera::strafe(float amount)
+{
+	this->position += this->right * amount;
+}
+
+
+void Camera::approach(float amount)
+{
+	glm::mat4 yawMatrix = glm::rotate(glm::mat4(1.0f), this->yaw, this->up);
+
+	this->position += yawMatrix * glm::vec4(this->initFront, 1.0f) * amount;
+}
+
+
 glm::mat4 Camera::getViewMatrix()
 {
 	return glm::lookAt(this->position, this->position + this->front, this->up);

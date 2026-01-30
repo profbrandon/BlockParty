@@ -8,10 +8,14 @@
 
 struct KeyInfo
 {
-	double wait;
+	double waitPress    = 0.0f;
+	double waitRelease  = 0.0f;
 
-	double lastPress;
-	double lastRelease;
+	double lastPress    = 0.0f;
+	double lastRelease  = 0.0f;
+
+	void (*onPress)()   = nullptr;
+	void (*onRelease)() = nullptr;
 };
 
 
@@ -25,7 +29,6 @@ private:
 	std::vector<unsigned int> keys;
 
 	std::map<unsigned int, KeyInfo>   keyInfoMap;
-	std::map<unsigned int, void(*)()> keyPressMap;
 
 public:
 	Window(GLFWwindow* window);

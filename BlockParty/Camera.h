@@ -26,5 +26,8 @@ public:
 	void addPitch(float radians);
 	void addYaw(float radians);
 
+	void strafe(float amount);
+	void approach(float amount);
+
 	glm::mat4 getViewMatrix();
 };
