@@ -24,7 +24,7 @@ void Window::bindLoopFunction(void (*it)())
 }
 
 
-void Window::enterLoop()
+void Window::enterLoop(Camera* camera, ModelContainer* models)
 {
 	if (this->it == nullptr) return;
 
@@ -33,6 +33,12 @@ void Window::enterLoop()
 		this->processInputs();
 		
 		this->it();
+
+		glm::mat4 view = camera->getViewMatrix();
+
+		models->processModels([](const Model* model) {
+				
+			});
 
 		glfwSwapBuffers(this->window);
 		glfwPollEvents();

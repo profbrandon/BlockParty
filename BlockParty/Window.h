@@ -6,6 +6,9 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "Camera.h"
+#include "ModelContainer.h"
+
 struct KeyInfo
 {
 	double waitPress    = 0.0f;
@@ -37,7 +40,7 @@ public:
 
 	void bindLoopFunction(void (*it)());
 
-	void enterLoop();
+	void enterLoop(Camera* camera, ModelContainer* models);
 
 	void bindKeyPress(unsigned int keyCode, double wait, void (*onPress)());
 

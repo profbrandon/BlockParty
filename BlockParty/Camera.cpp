@@ -5,8 +5,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 
-Camera::Camera(glm::vec3 position, float minPitch, float maxPitch)
-	: position(position), minPitch(minPitch), maxPitch(maxPitch)
+Camera::Camera(float minPitch, float maxPitch)
+	: minPitch(minPitch), maxPitch(maxPitch)
 {
 
 }

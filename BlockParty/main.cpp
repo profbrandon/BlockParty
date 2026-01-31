@@ -3,6 +3,8 @@
 
 #include "Window.h"
 #include "Shader.h"
+#include "Camera.h"
+#include "World.h"
 
 #define DEFAULT_WIDTH	1000
 #define DEFAULT_HEIGHT	600
@@ -29,8 +31,11 @@ int main()
 		return EXIT_FAILURE;
 	}
 
+	Camera* camera = new Camera(6.28f / 3.0f, - 6.28f / 3.0f);
+	World*  world  = new World();
+
 	window->bindLoopFunction(iteration);
-	window->enterLoop();
+	window->enterLoop(camera, (ModelContainer*) world);
 
 	delete window;
 	delete vertexShader;

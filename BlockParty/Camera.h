@@ -21,7 +21,7 @@ private:
 	float yaw   = 0.0f;
 
 public:
-	Camera(glm::vec3 position, float minPitch, float maxPitch);
+	Camera(float minPitch, float maxPitch);
 
 	void addPitch(float radians);
 	void addYaw(float radians);
