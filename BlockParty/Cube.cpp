@@ -3,13 +3,13 @@
 #include "Cube.h"
 #include "CubeModel.h"
 
-Cube::Cube(glm::vec3 position, unsigned int shaderProgram)
-	: Object(position, shaderProgram)
+Cube::Cube(int x, int y, int z, Program* shaderProgram)
+	: Object(glm::vec3(x, y, z), shaderProgram)
 {
 
 }
 
 Model* Cube::getModel()
 {
-	return new CubeModel(this->shaderProgram);
+	return new CubeModel(this->position, this->shaderProgram);
 }

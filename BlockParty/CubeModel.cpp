@@ -35,12 +35,13 @@ unsigned int indices[] =
 };
 
 
-CubeModel::CubeModel(unsigned int shaderProgram) 
+CubeModel::CubeModel(glm::vec3 position, Program* shaderProgram) 
 	: Model(
 		vertices, 
 		sizeof(vertices), 
 		indices, 
 		sizeof(indices), 
+		position,
 		shaderProgram)
 {
 

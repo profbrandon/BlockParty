@@ -20,12 +20,7 @@ void World::removeObject(unsigned int id)
 }
 
 
-void World::processModels(void (*modelFunc)(Model*))
+std::vector<Object*>& World::getObjects()
 {
-	std::for_each(
-		this->objects.begin(),
-		this->objects.end(),
-		[modelFunc](Object* object) {
-			modelFunc(object->getModel());
-		});
+	return this->objects;
 }

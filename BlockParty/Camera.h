@@ -20,6 +20,8 @@ private:
 	float pitch = 0.0f;
 	float yaw   = 0.0f;
 
+	void computeVectors();
+
 public:
 	Camera(float minPitch, float maxPitch);
 
@@ -28,6 +30,8 @@ public:
 
 	void strafe(float amount);
 	void approach(float amount);
+
+	void setPosition(float x, float y, float z);
 
 	glm::mat4 getViewMatrix();
 };

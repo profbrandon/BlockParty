@@ -6,7 +6,7 @@
 class Cube : public Object
 {
 public:
-	Cube(glm::vec3 position, unsigned int shaderProgram);
+	Cube(int x, int y, int z, Program* shaderProgram);
 
 	Model* getModel() override;
 };

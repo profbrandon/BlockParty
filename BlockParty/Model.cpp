@@ -5,6 +5,7 @@
 #include "stdlib.h"
 
 #include "glad/glad.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 
 Model::Model(
@@ -12,8 +13,9 @@ Model::Model(
 	unsigned int  v_size,
 	unsigned int* indices,
 	unsigned int  i_size,
-	unsigned int  shaderProgram)
-	: i_size(i_size), shaderProgram(shaderProgram)
+	glm::vec3     position,
+	Program*      shaderProgram)
+	: i_size(i_size), position(position), shaderProgram(shaderProgram)
 {
 	// Build vertex array object
 	glGenVertexArrays(1, &this->vao);
@@ -44,7 +46,9 @@ unsigned int Model::getVertexArrayObject()
 
 void Model::draw()
 {
-	glUseProgram(this->shaderProgram);
+	this->shaderProgram->setMatrix4f("model", glm::translate(glm::mat4(1.0f), this->position));
+
+	glUseProgram(this->shaderProgram->id);
 	glBindVertexArray(this->vao);
 	glDrawElements(GL_TRIANGLES, (int)(this->i_size / sizeof(unsigned int)), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

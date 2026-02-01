@@ -2,14 +2,30 @@
 #include <iostream>
 
 #include "Window.h"
-#include "Shader.h"
 #include "Camera.h"
 #include "World.h"
+#include "Cube.h"
+
+#include "Shader.h"
+#include "Program.h"
 
 #define DEFAULT_WIDTH	1000
 #define DEFAULT_HEIGHT	600
 #define APP_NAME        "Block Party"
+#define MAX_PITCH       (3.14f / 3.0f)
+#define MIN_PITCH       (- MAX_PITCH)
+#define SENSITIVITY     0.001f
 
+
+Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
+World*   world = new World();
+
+void w_press();
+void a_press();
+void s_press();
+void d_press();
+
+void cursorPositionCallback(double x, double y);
 
 void iteration();
 
@@ -31,16 +47,97 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	Camera* camera = new Camera(6.28f / 3.0f, - 6.28f / 3.0f);
-	World*  world  = new World();
+	std::vector<Shader*> shaders{ vertexShader, fragmentShader };
 
+	Program* shaderProgram = Program::buildProgram(shaders);
+
+	if (shaderProgram == NULL)
+	{
+		delete window;
+		delete vertexShader;
+		delete fragmentShader;
+		return EXIT_FAILURE;
+	}
+
+	Cube* cube1 = new Cube( 3,  0, -3, shaderProgram);
+	Cube* cube2 = new Cube(-3,  0, -3, shaderProgram);
+	Cube* cube3 = new Cube( 3,  0,  3, shaderProgram);
+	Cube* cube4 = new Cube(-3,  0,  3, shaderProgram);
+
+	world->addObject(cube1);
+	world->addObject(cube2);
+	world->addObject(cube3);
+	world->addObject(cube4);
+
+	window->bindKeyPress('W', 0.02f, w_press);
+	window->bindKeyPress('A', 0.02f, a_press);
+	window->bindKeyPress('S', 0.02f, s_press);
+	window->bindKeyPress('D', 0.02f, d_press);
+
+	window->bindCursorMovement(cursorPositionCallback);
 	window->bindLoopFunction(iteration);
-	window->enterLoop(camera, (ModelContainer*) world);
+
+	camera->setPosition(0, 1, 1);
+	
+	window->enterLoop(camera, (ObjectContainer*) world);
+
+	delete cube1;
+	delete cube2;
+	delete cube3;
+	delete cube4;
 
 	delete window;
 	delete vertexShader;
 	delete fragmentShader;
 	return EXIT_SUCCESS;
+}
+
+
+
+void w_press()
+{
+	camera->approach(0.2f);
+}
+
+
+void s_press()
+{
+	camera->approach(-0.2f);
+}
+
+
+void a_press()
+{
+	camera->strafe(-0.1f);
+}
+
+
+void d_press()
+{
+	camera->strafe(0.1f);
+}
+
+
+void cursorPositionCallback(double x, double y)
+{
+	static bool is_first = true;
+	static double lastX  = 0;
+	static double lastY  = 0;
+
+	if (is_first)
+	{
+		is_first = false;
+		lastX    = x;
+		lastY    = y;
+		return;
+	}
+
+	camera->addPitch(SENSITIVITY * (y - lastY));
+	camera->addYaw(SENSITIVITY * (x - lastX));
+
+	lastX = x;
+	lastY = y;
+	return;
 }
 
 

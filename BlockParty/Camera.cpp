@@ -1,6 +1,8 @@
 
 #include "Camera.h"
 
+#include <iostream>
+
 #include "glm/vec4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -12,30 +14,34 @@ Camera::Camera(float minPitch, float maxPitch)
 }
 
 
+void Camera::computeVectors()
+{
+	glm::mat4 yawMatrix   = glm::rotate(glm::mat4(1.0f), this->yaw,   this->up);
+	glm::mat4 pitchMatrix = glm::rotate(glm::mat4(1.0f), this->pitch, this->initRight);
+
+	this->right = yawMatrix * glm::vec4(this->initRight, 1.0f);
+	this->front = yawMatrix * pitchMatrix * glm::vec4(this->initFront, 1.0f);
+}
+
+
 void Camera::addPitch(float radians)
 {
-	this->pitch += radians;
+	this->pitch -= radians;
 
-	if (this->pitch > maxPitch)
-		this->pitch = maxPitch;
+	if (this->pitch > this->maxPitch)
+		this->pitch = this->maxPitch;
 
-	if (this->pitch < minPitch)
-		this->pitch = minPitch;
+	if (this->pitch < this->minPitch)
+		this->pitch = this->minPitch;
 
-	glm::mat4 yawMatrix   = glm::rotate(glm::mat4(1.0f), this->yaw,   this->up);
-	glm::mat4 pitchMatrix = glm::rotate(glm::mat4(1.0f), this->pitch, this->right);
-
-	this->front = pitchMatrix * yawMatrix * glm::vec4(this->initFront, 1.0f);
+	this->computeVectors();
 }
 
 
 void Camera::addYaw(float radians)
 {
-	this->yaw += radians;
-
-	glm::mat4 yawMatrix = glm::rotate(glm::mat4(1.0f), this->yaw, this->up);
-
-	this->right = yawMatrix * glm::vec4(this->initRight, 1.0f);
+	this->yaw -= radians;
+	this->computeVectors();
 }
 
 
@@ -50,6 +56,12 @@ void Camera::approach(float amount)
 	glm::mat4 yawMatrix = glm::rotate(glm::mat4(1.0f), this->yaw, this->up);
 
 	this->position += yawMatrix * glm::vec4(this->initFront, 1.0f) * amount;
+}
+
+
+void Camera::setPosition(float x, float y, float z)
+{
+	this->position = glm::vec3(x, y, z);
 }
 
 

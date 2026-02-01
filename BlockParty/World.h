@@ -3,10 +3,10 @@
 #include <vector>
 
 #include "Object.h"
-#include "ModelContainer.h"
+#include "ObjectContainer.h"
 
 
-class World : public ModelContainer
+class World : public ObjectContainer
 {
 private:
 	std::vector<Object*> objects{};
@@ -16,5 +16,5 @@ public:
 
 	void removeObject(unsigned int id);
 
-	void processModels(void (*modelFunc)(Model*)) override;
+	std::vector<Object*>& getObjects() override;
 };

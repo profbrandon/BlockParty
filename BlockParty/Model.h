@@ -1,13 +1,18 @@
 #pragma once
 
+#include "glm/vec3.hpp"
+
+#include "Program.h"
 
 class Model
 {
 private:
 	unsigned int vao;
-	unsigned int shaderProgram;
-
 	unsigned int i_size;
+
+	glm::vec3    position;
+
+	Program*     shaderProgram;
 
 public:
 	Model(
@@ -15,7 +20,8 @@ public:
 		unsigned int  v_size,
 		unsigned int* indices,
 		unsigned int  i_size,
-		unsigned int  shaderProgram
+		glm::vec3     position,
+		Program*      shaderProgram
 	);
 
 	unsigned int getVertexArrayObject();

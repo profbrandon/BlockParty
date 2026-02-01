@@ -3,6 +3,36 @@
 
 #include <iostream>
 
+#include "glm/gtc/type_ptr.hpp"
+
+
+
+void defaultCallback(double x, double y)
+{
+
+}
+
+
+static Window* instance = nullptr;
+
+static int window_width  = 0;
+static int window_height = 0;
+
+static void (*cursorCallback)(double x, double y) = defaultCallback;
+
+
+void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
+{
+	window_width  = width;
+	window_height = height;
+	glViewport(0, 0, width, height);
+}
+
+
+void cursorPositionCallback(GLFWwindow* window, double x, double y)
+{
+	cursorCallback(x, y);
+}
 
 
 void doNothing()
@@ -11,10 +41,15 @@ void doNothing()
 }
 
 
-Window::Window(GLFWwindow* window)
+Window::Window(GLFWwindow* window, int width, int height)
 	: window(window)
 {
+	window_width  = width;
+	window_height = height;
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, cursorPositionCallback);
+	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
 }
 
 
@@ -24,21 +59,36 @@ void Window::bindLoopFunction(void (*it)())
 }
 
 
-void Window::enterLoop(Camera* camera, ModelContainer* models)
+void Window::enterLoop(Camera* camera, ObjectContainer* container)
 {
 	if (this->it == nullptr) return;
 
 	while (!this->isClosing())
 	{
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
 		this->processInputs();
 		
 		this->it();
 
-		glm::mat4 view = camera->getViewMatrix();
+		glm::mat4 viewMatrix = camera->getViewMatrix();
+		glm::mat4 projMatrix = glm::perspective(glm::radians(45.0f), (float)window_width / window_height, 0.1f, 100.0f);
 
-		models->processModels([](const Model* model) {
-				
-			});
+
+		auto objects = container->getObjects();
+
+		for (Object* object : objects)
+		{
+			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), object->getPosition());
+
+			object->getProgram()->setMatrix4f("view", viewMatrix);
+			object->getProgram()->setMatrix4f("proj", projMatrix);
+
+			object->getModel()->draw();
+		}
+
 
 		glfwSwapBuffers(this->window);
 		glfwPollEvents();
@@ -69,6 +119,12 @@ void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)
 
 	keyInfo->waitRelease = wait;
 	keyInfo->onRelease   = onRelease;
+}
+
+
+void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
+{
+	cursorCallback = onMove;
 }
 
 
@@ -129,6 +185,8 @@ void Window::processInputs()
 
 Window* Window::initializeWindow(int width, int height, const char* name)
 {
+	if (instance != nullptr) return instance;
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -163,7 +221,9 @@ Window* Window::initializeWindow(int width, int height, const char* name)
 		return nullptr;
 	}
 
-	return new Window(window);
+	instance = new Window(window, width, height);
+	
+	return instance;
 }
 
 

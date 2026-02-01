@@ -2,10 +2,22 @@
 #include "Object.h"
 
 
-Object::Object(glm::vec3 position, unsigned int shaderProgram)
+Object::Object(glm::vec3 position, Program* shaderProgram)
 	: shaderProgram(shaderProgram), position(position)
 {
 	static unsigned int max_id = 0;
 	this->id = max_id;
 	++max_id;
+}
+
+
+glm::vec3 Object::getPosition()
+{
+	return this->position;
+}
+
+
+Program* Object::getProgram()
+{
+	return this->shaderProgram;
 }

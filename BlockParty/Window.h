@@ -7,7 +7,7 @@
 #include "GLFW/glfw3.h"
 
 #include "Camera.h"
-#include "ModelContainer.h"
+#include "ObjectContainer.h"
 
 struct KeyInfo
 {
@@ -33,22 +33,23 @@ private:
 
 	std::map<unsigned int, KeyInfo>   keyInfoMap;
 
-public:
-	Window(GLFWwindow* window);
 
+	Window(GLFWwindow* window, int width, int height);
+
+public:
 	~Window();
 
 	void bindLoopFunction(void (*it)());
 
-	void enterLoop(Camera* camera, ModelContainer* models);
+	void enterLoop(Camera* camera, ObjectContainer* models);
 
 	void bindKeyPress(unsigned int keyCode, double wait, void (*onPress)());
 
 	void bindKeyRelease(unsigned int keyCode, double wait, void (*onPress)());
 
-	void bindCursorMovement(void* (onMove)(double deltaX, double deltaY));
+	void bindCursorMovement(void (*onMove)(double xPos, double yPos));
 
-	void bindCursorClick(void* (onClick)(double xPos, double yPos));
+	void bindCursorClick(void (*onClick)(double xPos, double yPos));
 
 	void close();
 
