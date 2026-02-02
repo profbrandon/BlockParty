@@ -63,11 +63,12 @@ void Window::enterLoop(Camera* camera, ObjectContainer* container)
 {
 	if (this->it == nullptr) return;
 
+	glEnable(GL_DEPTH_TEST);
+
 	while (!this->isClosing())
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClear(GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		this->processInputs();
 		
