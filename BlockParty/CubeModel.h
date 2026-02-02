@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Model.h"
-#include "Program.h"
 
 class CubeModel : public Model
 {

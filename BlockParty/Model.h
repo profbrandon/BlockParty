@@ -6,7 +6,7 @@
 
 class Model
 {
-private:
+protected:
 	unsigned int vao;
 	unsigned int i_size;
 
@@ -28,5 +28,5 @@ public:
 
 	unsigned int getVertexArrayObject();
 	
-	void draw();
+	virtual void draw();
 };

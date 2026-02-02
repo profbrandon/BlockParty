@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "Camera.h"
 #include "World.h"
+#include "Light.h"
 #include "Cube.h"
 
 #include "Shader.h"
@@ -39,34 +40,46 @@ int main()
 	if (window == nullptr) 
 		return EXIT_FAILURE; 
 
-	Shader* vertexShader   = Shader::buildShader("vertex.glsl", GL_VERTEX_SHADER);
-	Shader* fragmentShader = Shader::buildShader("fragment.glsl", GL_FRAGMENT_SHADER);
+	Shader* vertexShader    = Shader::buildShader("vertex.glsl",     GL_VERTEX_SHADER);
+	Shader* cubeFragShader  = Shader::buildShader("cube-frag.glsl",  GL_FRAGMENT_SHADER);
+	Shader* lightFragShader = Shader::buildShader("light-frag.glsl", GL_FRAGMENT_SHADER);
 
-	if (vertexShader == NULL || fragmentShader == NULL)
+	if (vertexShader == NULL || cubeFragShader == NULL || lightFragShader == NULL)
 	{
 		delete window;
 		delete vertexShader;
-		delete fragmentShader;
+		delete cubeFragShader;
+		delete lightFragShader;
 		return EXIT_FAILURE;
 	}
 
-	std::vector<Shader*> shaders{ vertexShader, fragmentShader };
+	std::vector<Shader*> cubeShaders{ vertexShader, cubeFragShader };
+	std::vector<Shader*> lightShaders{ vertexShader, lightFragShader };
 
-	Program* shaderProgram = Program::buildProgram(shaders);
+	Program* cubeProgram = Program::buildProgram(cubeShaders);
+	Program* lightProgram = Program::buildProgram(lightShaders);
 
-	if (shaderProgram == NULL)
+	if (cubeProgram == NULL || lightProgram == NULL)
 	{
 		delete window;
 		delete vertexShader;
-		delete fragmentShader;
+		delete cubeFragShader;
+		delete lightFragShader;
+		delete cubeProgram;
+		delete lightProgram;
 		return EXIT_FAILURE;
 	}
 
-	Cube* cube1 = new Cube( 3,  0, -3, 1.0f, 0.0f, 0.0f, shaderProgram);
-	Cube* cube2 = new Cube(-3,  0, -3, 0.0f, 1.0f, 0.0f, shaderProgram);
-	Cube* cube3 = new Cube( 3,  0,  3, 0.0f, 0.0f, 1.0f, shaderProgram);
-	Cube* cube4 = new Cube(-3,  0,  3, 1.0f, 1.0f, 1.0f, shaderProgram);
+	std::vector<Program*> lightAffectedPrograms{ cubeProgram };
 
+	Light* light1 = new Light( 0,  3,  0,  1.0f, 1.0f, 1.0f, 1.0f, lightProgram, lightAffectedPrograms);
+
+	Cube* cube1 = new Cube( 3,  0, -3, 1.0f, 0.0f, 0.0f, cubeProgram);
+	Cube* cube2 = new Cube(-3,  0, -3, 0.0f, 1.0f, 0.0f, cubeProgram);
+	Cube* cube3 = new Cube( 3,  0,  3, 0.0f, 0.0f, 1.0f, cubeProgram);
+	Cube* cube4 = new Cube(-3,  0,  3, 1.0f, 1.0f, 1.0f, cubeProgram);
+
+	world->addObject(light1);
 	world->addObject(cube1);
 	world->addObject(cube2);
 	world->addObject(cube3);
@@ -91,7 +104,10 @@ int main()
 
 	delete window;
 	delete vertexShader;
-	delete fragmentShader;
+	delete cubeFragShader;
+	delete lightFragShader;
+	delete cubeProgram;
+	delete lightProgram;
 	return EXIT_SUCCESS;
 }
 
