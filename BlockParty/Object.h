@@ -9,11 +9,12 @@
 class Object
 {
 protected:
+	glm::vec3 color;
 	glm::vec3 position;
 
 	Program* shaderProgram;
 
-	Object(glm::vec3 position, Program* shaderProgram);
+	Object(glm::vec3 color, glm::vec3 position, Program* shaderProgram);
 
 public:
 	unsigned int id;

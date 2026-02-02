@@ -2,8 +2,13 @@
 #include "Object.h"
 
 
-Object::Object(glm::vec3 position, Program* shaderProgram)
-	: shaderProgram(shaderProgram), position(position)
+Object::Object(
+	glm::vec3 color,
+	glm::vec3 position, 
+	Program* shaderProgram)
+	: color(color),
+	  position(position),
+	  shaderProgram(shaderProgram)
 {
 	static unsigned int max_id = 0;
 	this->id = max_id;

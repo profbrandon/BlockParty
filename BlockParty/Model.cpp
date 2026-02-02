@@ -13,9 +13,13 @@ Model::Model(
 	unsigned int  v_size,
 	unsigned int* indices,
 	unsigned int  i_size,
+	glm::vec3     color,
 	glm::vec3     position,
 	Program*      shaderProgram)
-	: i_size(i_size), position(position), shaderProgram(shaderProgram)
+	: i_size(i_size), 
+	  color(color), 
+	  position(position), 
+	  shaderProgram(shaderProgram)
 {
 	// Build vertex array object
 	glGenVertexArrays(1, &this->vao);
@@ -46,6 +50,7 @@ unsigned int Model::getVertexArrayObject()
 
 void Model::draw()
 {
+	this->shaderProgram->setFloat3("objColor", this->color.r, this->color.g, this->color.b);
 	this->shaderProgram->setMatrix4f("model", glm::translate(glm::mat4(1.0f), this->position));
 
 	glUseProgram(this->shaderProgram->id);

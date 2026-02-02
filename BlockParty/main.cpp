@@ -62,10 +62,10 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	Cube* cube1 = new Cube( 3,  0, -3, shaderProgram);
-	Cube* cube2 = new Cube(-3,  0, -3, shaderProgram);
-	Cube* cube3 = new Cube( 3,  0,  3, shaderProgram);
-	Cube* cube4 = new Cube(-3,  0,  3, shaderProgram);
+	Cube* cube1 = new Cube( 3,  0, -3, 1.0f, 0.0f, 0.0f, shaderProgram);
+	Cube* cube2 = new Cube(-3,  0, -3, 0.0f, 1.0f, 0.0f, shaderProgram);
+	Cube* cube3 = new Cube( 3,  0,  3, 0.0f, 0.0f, 1.0f, shaderProgram);
+	Cube* cube4 = new Cube(-3,  0,  3, 1.0f, 1.0f, 1.0f, shaderProgram);
 
 	world->addObject(cube1);
 	world->addObject(cube2);
