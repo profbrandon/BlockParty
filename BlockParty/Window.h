@@ -11,14 +11,16 @@
 
 struct KeyInfo
 {
+	bool   newPress     = true;
+
 	double waitPress    = 0.0f;
 	double waitRelease  = 0.0f;
 
 	double lastPress    = 0.0f;
 	double lastRelease  = 0.0f;
 
-	void (*onPress)()   = nullptr;
-	void (*onRelease)() = nullptr;
+	void (*onPress)(double deltaT)   = nullptr;
+	void (*onRelease)(double deltaT) = nullptr;
 };
 
 
@@ -43,9 +45,9 @@ public:
 
 	void enterLoop(Camera* camera, ObjectContainer* models);
 
-	void bindKeyPress(unsigned int keyCode, double wait, void (*onPress)());
+	void bindKeyPress(unsigned int keyCode, double wait, void (*onPress)(double deltaT));
 
-	void bindKeyRelease(unsigned int keyCode, double wait, void (*onPress)());
+	void bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)(double deltaT));
 
 	void bindCursorMovement(void (*onMove)(double xPos, double yPos));
 

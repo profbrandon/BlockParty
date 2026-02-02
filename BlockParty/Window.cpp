@@ -96,7 +96,7 @@ void Window::enterLoop(Camera* camera, ObjectContainer* container)
 }
 
 
-void Window::bindKeyPress(unsigned int keyCode, double wait, void (*onPress)())
+void Window::bindKeyPress(unsigned int keyCode, double wait, void (*onPress)(double deltaT))
 {
 	this->keys.push_back(keyCode);
 
@@ -109,7 +109,7 @@ void Window::bindKeyPress(unsigned int keyCode, double wait, void (*onPress)())
 }
 
 
-void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)(void))
+void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)(double deltaT))
 {
 	this->keys.push_back(keyCode);
 
@@ -157,27 +157,37 @@ void Window::processInputs()
 
 		KeyInfo* keyInfo = &this->keyInfoMap[keyCode];
 
+		double deltaT = 0.0f;
+
 		switch (keyStatus)
 		{
 		case GLFW_PRESS:
 			if (keyInfo->onPress == nullptr)
 				break;
 
-			if (currentTime - keyInfo->lastPress > keyInfo->waitPress)
+			deltaT = currentTime - keyInfo->lastPress;
+
+			if (deltaT > keyInfo->waitPress)
 			{
 				keyInfo->lastPress = currentTime;
-				keyInfo->onPress();
+				keyInfo->onPress(keyInfo->newPress ? keyInfo->waitPress : deltaT);
 			}
+
+			keyInfo->newPress = false;
 			break;
 
 		case GLFW_RELEASE:
+			keyInfo->newPress = true;
+
 			if (keyInfo->onRelease == nullptr)
 				break;
 
-			if (currentTime - keyInfo->lastRelease > keyInfo->waitRelease)
+			deltaT = currentTime - keyInfo->lastRelease;
+
+			if (deltaT > keyInfo->waitRelease)
 			{
 				keyInfo->lastRelease = currentTime;
-				keyInfo->onRelease();
+				keyInfo->onRelease(deltaT);
 			}
 		}
 	}

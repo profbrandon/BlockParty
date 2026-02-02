@@ -12,18 +12,21 @@
 #define DEFAULT_WIDTH	1000
 #define DEFAULT_HEIGHT	600
 #define APP_NAME        "Block Party"
+
 #define MAX_PITCH       (3.14f / 3.0f)
 #define MIN_PITCH       (- MAX_PITCH)
 #define SENSITIVITY     0.001f
+#define APPROACH_SPEED  10.0
+#define STRAFE_SPEED    5.0
 
 
 Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
 World*   world = new World();
 
-void w_press();
-void a_press();
-void s_press();
-void d_press();
+void w_press(double deltaT);
+void a_press(double deltaT);
+void s_press(double deltaT);
+void d_press(double deltaT);
 
 void cursorPositionCallback(double x, double y);
 
@@ -94,27 +97,27 @@ int main()
 
 
 
-void w_press()
+void w_press(double deltaT)
 {
-	camera->approach(0.2f);
+	camera->approach(APPROACH_SPEED * deltaT);
 }
 
 
-void s_press()
+void s_press(double deltaT)
 {
-	camera->approach(-0.2f);
+	camera->approach(-APPROACH_SPEED * deltaT);
 }
 
 
-void a_press()
+void a_press(double deltaT)
 {
-	camera->strafe(-0.1f);
+	camera->strafe(-STRAFE_SPEED * deltaT);
 }
 
 
-void d_press()
+void d_press(double deltaT)
 {
-	camera->strafe(0.1f);
+	camera->strafe(STRAFE_SPEED * deltaT);
 }
 
 
