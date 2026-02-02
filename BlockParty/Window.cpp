@@ -130,6 +130,7 @@ void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
 
 void Window::close()
 {
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwSetWindowShouldClose(this->window, GLFW_TRUE);
 }
 
