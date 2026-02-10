@@ -23,6 +23,7 @@ void LightModel::draw()
 
 	for (Program* program : this->affectedPrograms)
 	{
+		program->setFloat3("lightPos", this->position.x, this->position.y, this->position.z);
 		program->setFloat3("lightColor", this->color.r, this->color.g, this->color.b);
 		program->setFloat("intensity", this->intensity);
 	}
