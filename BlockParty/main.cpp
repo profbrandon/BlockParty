@@ -50,6 +50,8 @@ int main()
 		delete vertexShader;
 		delete cubeFragShader;
 		delete lightFragShader;
+		delete world;
+		delete camera;
 		return EXIT_FAILURE;
 	}
 
@@ -67,6 +69,8 @@ int main()
 		delete lightFragShader;
 		delete cubeProgram;
 		delete lightProgram;
+		delete world;
+		delete camera;
 		return EXIT_FAILURE;
 	}
 
@@ -85,6 +89,8 @@ int main()
 	world->addObject(cube3);
 	world->addObject(cube4);
 
+	world->setCamera(camera);
+
 	window->bindKeyPress('W', 0.02f, w_press);
 	window->bindKeyPress('A', 0.02f, a_press);
 	window->bindKeyPress('S', 0.02f, s_press);
@@ -97,6 +103,7 @@ int main()
 	
 	window->enterLoop(camera, (ObjectContainer*) world);
 
+	delete light1;
 	delete cube1;
 	delete cube2;
 	delete cube3;
@@ -108,6 +115,8 @@ int main()
 	delete lightFragShader;
 	delete cubeProgram;
 	delete lightProgram;
+	delete world;
+	delete camera;
 	return EXIT_SUCCESS;
 }
 

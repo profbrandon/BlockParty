@@ -32,6 +32,7 @@ public:
 	void approach(float amount);
 
 	void setPosition(float x, float y, float z);
+	glm::vec3 getPosition();
 
 	glm::mat4 getViewMatrix();
 };

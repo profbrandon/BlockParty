@@ -64,6 +64,11 @@ void Camera::setPosition(float x, float y, float z)
 	this->position = glm::vec3(x, y, z);
 }
 
+glm::vec3 Camera::getPosition()
+{
+	return this->position;
+}
+
 
 glm::mat4 Camera::getViewMatrix()
 {
