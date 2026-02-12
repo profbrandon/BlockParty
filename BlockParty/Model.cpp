@@ -102,6 +102,13 @@ Model::Model(
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+
+void Model::setPosition(float x, float y, float z)
+{
+	this->position = glm::vec3(x, y, z);
+}
+
+
 unsigned int Model::getVertexArrayObject()
 {
 	return this->vao;

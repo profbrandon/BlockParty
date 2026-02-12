@@ -22,6 +22,12 @@ glm::vec3 Object::getPosition()
 }
 
 
+void Object::setPosition(float x, float y, float z)
+{
+	this->position = glm::vec3(x, y, z);
+}
+
+
 Program* Object::getProgram()
 {
 	return this->shaderProgram;

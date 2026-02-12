@@ -21,6 +21,8 @@ public:
 
 	glm::vec3 getPosition();
 
+	void setPosition(float x, float y, float z);
+
 	Program* getProgram();
 
 	virtual Model* getModel() = 0;

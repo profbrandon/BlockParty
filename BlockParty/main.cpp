@@ -21,6 +21,7 @@
 #define STRAFE_SPEED    5.0
 
 
+Light* light1  = nullptr;
 Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
 World*   world = new World();
 
@@ -31,7 +32,7 @@ void d_press(double deltaT);
 
 void cursorPositionCallback(double x, double y);
 
-void iteration();
+void iteration(double deltaT);
 
 int main()
 {
@@ -76,7 +77,7 @@ int main()
 
 	std::vector<Program*> lightAffectedPrograms{ cubeProgram };
 
-	Light* light1 = new Light( 0,  3,  0,  1.0f, 1.0f, 1.0f, 1.0f, lightProgram, lightAffectedPrograms);
+	light1 = new Light( 0,  3,  0,  1.0f, 1.0f, 1.0f, 1.0f, lightProgram, lightAffectedPrograms);
 
 	Cube* cube1 = new Cube( 3,  0, -3, 1.0f, 0.0f, 0.0f, cubeProgram);
 	Cube* cube2 = new Cube(-3,  0, -3, 0.0f, 1.0f, 0.0f, cubeProgram);
@@ -169,7 +170,11 @@ void cursorPositionCallback(double x, double y)
 }
 
 
-void iteration()
+void iteration(double deltaT)
 {
+	static double t = 0.0f;
 
+	t += deltaT;
+
+	light1->setPosition(2 * sin(2 * t), 3.0f, 2 * cos(2 * t));
 }

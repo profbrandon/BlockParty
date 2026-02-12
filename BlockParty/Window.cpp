@@ -53,7 +53,7 @@ Window::Window(GLFWwindow* window, int width, int height)
 }
 
 
-void Window::bindLoopFunction(void (*it)())
+void Window::bindLoopFunction(void (*it)(double deltaT))
 {
 	this->it = it;
 }
@@ -61,7 +61,11 @@ void Window::bindLoopFunction(void (*it)())
 
 void Window::enterLoop(Camera* camera, ObjectContainer* container)
 {
+	static double lastTime = glfwGetTime();
+
 	if (this->it == nullptr) return;
+
+	double deltaT = 0;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -72,7 +76,7 @@ void Window::enterLoop(Camera* camera, ObjectContainer* container)
 
 		this->processInputs();
 		
-		this->it();
+		this->it(deltaT);
 
 		glm::mat4 viewMatrix = camera->getViewMatrix();
 		glm::mat4 projMatrix = glm::perspective(glm::radians(45.0f), (float)window_width / window_height, 0.1f, 100.0f);
@@ -93,6 +97,11 @@ void Window::enterLoop(Camera* camera, ObjectContainer* container)
 
 		glfwSwapBuffers(this->window);
 		glfwPollEvents();
+
+		double currentTime = glfwGetTime();
+
+		deltaT   = currentTime - lastTime;
+		lastTime = currentTime;
 	}
 }
 

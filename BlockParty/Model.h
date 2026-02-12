@@ -26,6 +26,8 @@ public:
 		Program*      shaderProgram
 	);
 
+	void setPosition(float x, float y, float z);
+
 	unsigned int getVertexArrayObject();
 	
 	virtual void draw();

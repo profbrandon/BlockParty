@@ -29,7 +29,7 @@ class Window
 private:
 	GLFWwindow* window;
 
-	void(*it)() = nullptr;
+	void(*it)(double deltaT) = nullptr;
 
 	std::vector<unsigned int> keys;
 
@@ -41,7 +41,7 @@ private:
 public:
 	~Window();
 
-	void bindLoopFunction(void (*it)());
+	void bindLoopFunction(void (*it)(double deltaT));
 
 	void enterLoop(Camera* camera, ObjectContainer* models);
 
