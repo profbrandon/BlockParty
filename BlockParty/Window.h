@@ -33,7 +33,9 @@ private:
 
 	std::vector<unsigned int> keys;
 
-	std::map<unsigned int, KeyInfo>   keyInfoMap;
+	std::map<unsigned int, KeyInfo> keyInfoMap;
+
+	bool cursorMode = false;
 
 
 	Window(GLFWwindow* window, int width, int height);
@@ -52,6 +54,10 @@ public:
 	void bindCursorMovement(void (*onMove)(double xPos, double yPos));
 
 	void bindCursorClick(void (*onClick)(double xPos, double yPos));
+
+	void setCursorMode(bool onOrOff);
+
+	bool getCursorMode();
 
 	void close();
 

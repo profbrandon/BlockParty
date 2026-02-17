@@ -47,7 +47,7 @@ Window::Window(GLFWwindow* window, int width, int height)
 	window_width  = width;
 	window_height = height;
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	this->setCursorMode(false);
 	glfwSetCursorPosCallback(window, cursorPositionCallback);
 	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
 }
@@ -138,9 +138,27 @@ void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
 }
 
 
+void Window::setCursorMode(bool onOrOff)
+{
+	this->cursorMode = onOrOff;
+	glfwSetInputMode(
+		window, 
+		GLFW_CURSOR, 
+		this->cursorMode 
+			? GLFW_CURSOR_NORMAL 
+		    : GLFW_CURSOR_DISABLED);
+}
+
+
+bool Window::getCursorMode()
+{
+	return this->cursorMode;
+}
+
+
 void Window::close()
 {
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	this->setCursorMode(true);
 	glfwSetWindowShouldClose(this->window, GLFW_TRUE);
 }
 

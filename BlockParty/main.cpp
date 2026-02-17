@@ -21,6 +21,7 @@
 #define STRAFE_SPEED    5.0
 
 
+Window* window = nullptr;
 Light*  light1 = nullptr;
 Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
 World*  world  = new World();
@@ -29,6 +30,7 @@ void w_press(double deltaT);
 void a_press(double deltaT);
 void s_press(double deltaT);
 void d_press(double deltaT);
+void x_press(double deltaT);
 
 void cursorPositionCallback(double x, double y);
 
@@ -36,7 +38,7 @@ void iteration(double deltaT);
 
 int main()
 {
-	Window* window = Window::initializeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, APP_NAME);
+	window = Window::initializeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, APP_NAME);
 
 	if (window == nullptr) 
 		return EXIT_FAILURE; 
@@ -96,6 +98,7 @@ int main()
 	window->bindKeyPress('A', 0.02f, a_press);
 	window->bindKeyPress('S', 0.02f, s_press);
 	window->bindKeyPress('D', 0.02f, d_press);
+	window->bindKeyPress('X', 0.2f,  x_press);
 
 	window->bindCursorMovement(cursorPositionCallback);
 	window->bindLoopFunction(iteration);
@@ -114,7 +117,6 @@ int main()
 	delete camera;
 	return EXIT_SUCCESS;
 }
-
 
 
 void w_press(double deltaT)
@@ -138,6 +140,15 @@ void a_press(double deltaT)
 void d_press(double deltaT)
 {
 	camera->strafe(STRAFE_SPEED * deltaT);
+}
+
+
+void x_press(double deltaT)
+{
+	if (window == nullptr)
+		return;
+	else
+		window->setCursorMode(!window->getCursorMode());
 }
 
 
