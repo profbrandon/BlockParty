@@ -16,6 +16,25 @@ LightModel::LightModel(
 
 }
 
+
+void LightModel::setColor(glm::vec3 color)
+{
+	this->color = color;
+}
+
+
+void LightModel::setPosition(glm::vec3 position)
+{
+	this->position = position;
+}
+
+
+void LightModel::setIntensity(float intensity)
+{
+	this->intensity = intensity;
+}
+
+
 void LightModel::draw()
 {
 	this->shaderProgram->setFloat3("lightColor", this->color.r, this->color.g, this->color.b);

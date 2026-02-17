@@ -1,10 +1,14 @@
 #pragma once
 
 #include "Object.h"
+#include "CubeModel.h"
 
 
 class Cube : public Object
 {
+private:
+	CubeModel* model;
+
 public:
 	Cube(
 		int x, 
@@ -16,4 +20,6 @@ public:
 		Program* shaderProgram);
 
 	Model* getModel() override;
+
+	~Cube();
 };

@@ -16,5 +16,11 @@ public:
 		Program* shaderProgram,
 		std::vector<Program*>& affectedPrograms);
 
+	void setColor(glm::vec3 color);
+
+	void setPosition(glm::vec3 position);
+	
+	void setIntensity(float intensity);
+
 	void draw() override;
 };

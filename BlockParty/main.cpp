@@ -21,9 +21,9 @@
 #define STRAFE_SPEED    5.0
 
 
-Light* light1  = nullptr;
+Light*  light1 = nullptr;
 Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
-World*   world = new World();
+World*  world  = new World();
 
 void w_press(double deltaT);
 void a_press(double deltaT);
@@ -103,13 +103,7 @@ int main()
 	camera->setPosition(0, 1, 1);
 	
 	window->enterLoop(camera, (ObjectContainer*) world);
-
-	delete light1;
-	delete cube1;
-	delete cube2;
-	delete cube3;
-	delete cube4;
-
+	
 	delete window;
 	delete vertexShader;
 	delete cubeFragShader;
@@ -170,11 +164,21 @@ void cursorPositionCallback(double x, double y)
 }
 
 
+float yuh(float t, float s, float f, float w, float pos)
+{
+	return w * sin(f * (t + pos * s)) + (1.0f - w);
+}
+
+
 void iteration(double deltaT)
 {
 	static double t = 0.0f;
+	static double s = 2.0f * 3.141592f / 3.0f;
+	static double f = 10.0f;
+	static double w = 0.2f;
 
 	t += deltaT;
 
+	light1->setColor(yuh(t,s,f,w,0.0f), yuh(t,s,f,w,1.0f), yuh(t,s,f,w,2.0f));
 	light1->setPosition(2 * sin(2 * t), 3.0f, 2 * cos(2 * t));
 }
