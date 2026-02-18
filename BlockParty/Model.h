@@ -7,6 +7,8 @@
 class Model
 {
 protected:
+	bool selected = false;
+
 	unsigned int vao;
 	unsigned int i_size;
 
@@ -27,6 +29,8 @@ public:
 	);
 
 	void setPosition(float x, float y, float z);
+
+	virtual void setSelected(bool selected);
 
 	unsigned int getVertexArrayObject();
 	

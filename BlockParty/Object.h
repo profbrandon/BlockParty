@@ -9,6 +9,8 @@
 class Object
 {
 protected:
+	bool selected = false;
+
 	glm::vec3 color;
 	glm::vec3 position;
 
@@ -21,7 +23,11 @@ public:
 
 	glm::vec3 getPosition();
 
+	bool isSelected();
+
 	void setPosition(float x, float y, float z);
+
+	virtual void setSelected(bool selected);
 
 	Program* getProgram();
 

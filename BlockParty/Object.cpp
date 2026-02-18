@@ -16,9 +16,21 @@ Object::Object(
 }
 
 
+bool Object::isSelected()
+{
+	return this->selected;
+}
+
+
 glm::vec3 Object::getPosition()
 {
 	return this->position;
+}
+
+
+void Object::setSelected(bool selected)
+{
+	this->selected = selected;
 }
 
 

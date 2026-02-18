@@ -16,6 +16,12 @@ Cube::Cube(
 	this->model = new CubeModel(this->color, this->position, this->shaderProgram);
 }
 
+void Cube::setSelected(bool selected)
+{
+	this->selected = selected;
+	this->model->setSelected(selected);
+}
+
 Model* Cube::getModel()
 {
 	glm::vec3 pos = this->position;

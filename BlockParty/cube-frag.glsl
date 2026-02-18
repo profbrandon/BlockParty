@@ -5,6 +5,8 @@ in  vec3 fragPos;
 in  vec3 aNormal;
 out vec4 FragColor;
 
+uniform bool selected;
+
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform float intensity;
@@ -15,6 +17,12 @@ uniform vec3 viewPos;
 
 void main()
 {
+    if (selected)
+	{
+		FragColor = vec4(1.0f);
+		return;
+	}
+
 	vec3 lightDir = normalize(lightPos - fragPos);
 	vec3 viewDir  = normalize(viewPos - fragPos);
 	vec3 reflDir  = reflect(-lightDir, aNormal);

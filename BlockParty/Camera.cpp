@@ -70,6 +70,12 @@ glm::vec3 Camera::getPosition()
 }
 
 
+glm::vec3 Camera::getFront()
+{
+	return this->front;
+}
+
+
 glm::mat4 Camera::getViewMatrix()
 {
 	return glm::lookAt(this->position, this->position + this->front, this->up);

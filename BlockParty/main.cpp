@@ -34,6 +34,8 @@ void x_press(double deltaT);
 
 void cursorPositionCallback(double x, double y);
 
+void cursorClickCallback(double x, double y);
+
 void iteration(double deltaT);
 
 int main()
@@ -101,6 +103,7 @@ int main()
 	window->bindKeyPress('X', 0.2f,  x_press);
 
 	window->bindCursorMovement(cursorPositionCallback);
+	window->bindCursorClick(cursorClickCallback);
 	window->bindLoopFunction(iteration);
 
 	camera->setPosition(0, 1, 1);
@@ -171,7 +174,36 @@ void cursorPositionCallback(double x, double y)
 
 	lastX = x;
 	lastY = y;
-	return;
+}
+
+
+void cursorClickCallback(double x, double y)
+{
+	float minDist = 100000.0f;
+
+	Object* toSelect = nullptr;
+
+	for (Object* obj : world->getObjects())
+	{
+		glm::vec3 oPos = obj->getPosition();
+		glm::vec3 cPos = camera->getPosition();
+
+		glm::vec3 front = camera->getFront();
+
+		if (glm::length(glm::cross(front, glm::normalize(cPos - oPos))) < 0.08)
+		{
+			float dist = glm::length(cPos - oPos);
+
+			if (dist < minDist)
+			{
+				minDist = dist;
+				toSelect = obj;
+			}
+		}
+	}
+
+	if (toSelect != nullptr)
+		toSelect->setSelected(!toSelect->isSelected());
 }
 
 

@@ -103,6 +103,12 @@ Model::Model(
 }
 
 
+void Model::setSelected(bool selected)
+{
+	this->selected = selected;
+}
+
+
 void Model::setPosition(float x, float y, float z)
 {
 	this->position = glm::vec3(x, y, z);
@@ -116,6 +122,7 @@ unsigned int Model::getVertexArrayObject()
 
 void Model::draw()
 {
+	this->shaderProgram->setBool("selected", this->selected);
 	this->shaderProgram->setFloat3("objColor", this->color.r, this->color.g, this->color.b);
 	this->shaderProgram->setMatrix4f("model", glm::translate(glm::mat4(1.0f), this->position));
 

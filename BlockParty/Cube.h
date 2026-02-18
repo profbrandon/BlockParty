@@ -19,6 +19,8 @@ public:
 		float b,
 		Program* shaderProgram);
 
+	void setSelected(bool selected) override;
+
 	Model* getModel() override;
 
 	~Cube();

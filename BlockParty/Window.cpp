@@ -15,10 +15,15 @@ void defaultCallback(double x, double y)
 
 static Window* instance = nullptr;
 
+static double mousePosX = 0;
+static double mousePosY = 0;
+
 static int window_width  = 0;
 static int window_height = 0;
 
 static void (*cursorCallback)(double x, double y) = defaultCallback;
+
+static void (*clickCallback)(double x, double y) = defaultCallback;
 
 
 void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
@@ -31,7 +36,17 @@ void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
 
 void cursorPositionCallback(GLFWwindow* window, double x, double y)
 {
+	mousePosX = x;
+	mousePosY = y;
+
 	cursorCallback(x, y);
+}
+
+
+void cursorClickCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		clickCallback(mousePosX, mousePosY);
 }
 
 
@@ -49,6 +64,7 @@ Window::Window(GLFWwindow* window, int width, int height)
 
 	this->setCursorMode(false);
 	glfwSetCursorPosCallback(window, cursorPositionCallback);
+	glfwSetMouseButtonCallback(window, cursorClickCallback);
 	glfwSetFramebufferSizeCallback(window, frameBufferResizeCallback);
 }
 
@@ -135,6 +151,12 @@ void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)
 void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
 {
 	cursorCallback = onMove;
+}
+
+
+void Window::bindCursorClick(void (*onClick)(double xPos, double yPos))
+{
+	clickCallback = onClick;
 }
 
 
