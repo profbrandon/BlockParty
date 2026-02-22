@@ -23,6 +23,8 @@ void main()
 		return;
 	}
 
+	float dist = length(lightPos - fragPos) / 10.0f;
+
 	vec3 lightDir = normalize(lightPos - fragPos);
 	vec3 viewDir  = normalize(viewPos - fragPos);
 	vec3 reflDir  = reflect(-lightDir, aNormal);
@@ -38,7 +40,10 @@ void main()
 	float specular = 0.5f * strength;
 
 
-	vec3 lighting = min((ambient + diffuse + specular) * objColor * lightColor, 1.0f);
+	float total = (ambient + diffuse + specular) / (1.0f + dist * dist);
+
+
+	vec3 lighting = min(total * objColor * lightColor, 1.0f);
 
 	FragColor = vec4(lighting, 1.0f);
 }
