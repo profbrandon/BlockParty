@@ -10,5 +10,7 @@ private:
 public:
 	const unsigned int id;
 
+	~Shader();
+
 	static Shader* buildShader(const char* filePath, unsigned int shaderType);
 };

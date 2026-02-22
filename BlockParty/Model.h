@@ -10,6 +10,7 @@ protected:
 	bool selected = false;
 
 	unsigned int vao;
+	unsigned int vbo;
 	unsigned int i_size;
 
 	glm::vec3    color;
@@ -27,6 +28,8 @@ public:
 		glm::vec3     position,
 		Program*      shaderProgram
 	);
+
+	~Model();
 
 	void setPosition(float x, float y, float z);
 

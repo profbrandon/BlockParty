@@ -16,7 +16,7 @@
 
 #define MAX_PITCH       (3.14f / 3.0f)
 #define MIN_PITCH       (- MAX_PITCH)
-#define SENSITIVITY     0.001f
+#define SENSITIVITY     0.0008f
 #define APPROACH_SPEED  10.0
 #define STRAFE_SPEED    5.0
 
@@ -38,50 +38,58 @@ void cursorClickCallback(double x, double y);
 
 void iteration(double deltaT);
 
+void cleanUp(std::vector<void*> ptrs);
+
+bool cleanUpNecessary(std::vector<void*> ptrs);
+
+
+
 int main()
 {
 	window = Window::initializeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, APP_NAME);
 
 	if (window == nullptr) 
-		return EXIT_FAILURE; 
-
-	Shader* vertexShader    = Shader::buildShader("vertex.glsl",     GL_VERTEX_SHADER);
-	Shader* cubeFragShader  = Shader::buildShader("cube-frag.glsl",  GL_FRAGMENT_SHADER);
-	Shader* lightFragShader = Shader::buildShader("light-frag.glsl", GL_FRAGMENT_SHADER);
-
-	if (vertexShader == NULL || cubeFragShader == NULL || lightFragShader == NULL)
-	{
-		delete window;
-		delete vertexShader;
-		delete cubeFragShader;
-		delete lightFragShader;
-		delete world;
-		delete camera;
 		return EXIT_FAILURE;
-	}
 
-	std::vector<Shader*> cubeShaders{ vertexShader, cubeFragShader };
-	std::vector<Shader*> lightShaders{ vertexShader, lightFragShader };
+	Shader* vertexShader    = Shader::buildShader("vertex.glsl",         GL_VERTEX_SHADER);
+	Shader* retVertexShader = Shader::buildShader("reticle-vertex.glsl", GL_VERTEX_SHADER);
+	Shader* retFragShader   = Shader::buildShader("reticle-frag.glsl",   GL_FRAGMENT_SHADER);
+	Shader* cubeFragShader  = Shader::buildShader("cube-frag.glsl",      GL_FRAGMENT_SHADER);
+	Shader* lightFragShader = Shader::buildShader("light-frag.glsl",     GL_FRAGMENT_SHADER);
 
-	Program* cubeProgram = Program::buildProgram(cubeShaders);
-	Program* lightProgram = Program::buildProgram(lightShaders);
+	std::vector<void*> collect{ 
+		camera,
+		world,
+		vertexShader, 
+		retVertexShader, 
+		retFragShader, 
+		cubeFragShader, 
+		lightFragShader 
+	};
 
-	if (cubeProgram == NULL || lightProgram == NULL)
-	{
-		delete window;
-		delete vertexShader;
-		delete cubeFragShader;
-		delete lightFragShader;
-		delete cubeProgram;
-		delete lightProgram;
-		delete world;
-		delete camera;
+	if (cleanUpNecessary(collect))
 		return EXIT_FAILURE;
-	}
+	
+	std::vector<Shader*> cubeShaders    { vertexShader,    cubeFragShader };
+	std::vector<Shader*> lightShaders   { vertexShader,    lightFragShader };
+	std::vector<Shader*> reticleShaders { retVertexShader, retFragShader };
+
+	Program* cubeProgram    = Program::buildProgram(cubeShaders);
+	Program* lightProgram   = Program::buildProgram(lightShaders);
+	Program* reticleProgram = Program::buildProgram(reticleShaders);
+
+	collect.push_back(cubeProgram);
+	collect.push_back(lightProgram);
+	collect.push_back(reticleProgram);
+
+	if (cleanUpNecessary(collect))
+		return EXIT_FAILURE;
 
 	std::vector<Program*> lightAffectedPrograms{ cubeProgram };
 
 	light1 = new Light( 0,  3,  0,  1.0f, 1.0f, 1.0f, 1.0f, lightProgram, lightAffectedPrograms);
+
+	Reticle* reticle = new Reticle(reticleProgram);
 
 	Cube* cube1 = new Cube( 3,  0, -3, 1.0f, 0.0f, 0.0f, cubeProgram);
 	Cube* cube2 = new Cube(-3,  0, -3, 0.0f, 1.0f, 0.0f, cubeProgram);
@@ -95,6 +103,8 @@ int main()
 	world->addObject(cube4);
 
 	world->setCamera(camera);
+
+	window->setReticle(reticle);
 
 	window->bindKeyPress('W', 0.02f, w_press);
 	window->bindKeyPress('A', 0.02f, a_press);
@@ -110,15 +120,31 @@ int main()
 	
 	window->enterLoop(camera, (ObjectContainer*) world);
 	
-	delete window;
-	delete vertexShader;
-	delete cubeFragShader;
-	delete lightFragShader;
-	delete cubeProgram;
-	delete lightProgram;
-	delete world;
-	delete camera;
+	cleanUp(collect);
 	return EXIT_SUCCESS;
+}
+
+
+void cleanUp(std::vector<void*> ptrs)
+{
+	for (void* toDelete : ptrs)
+		if (toDelete != nullptr)
+			delete toDelete;
+}
+
+
+bool cleanUpNecessary(std::vector<void*> ptrs)
+{
+	bool foundNullptr = false;
+
+	for (void* ptr : ptrs)
+		if (ptr == nullptr)
+			foundNullptr = true;
+
+	if (foundNullptr)
+		cleanUp(ptrs);
+
+	return foundNullptr;
 }
 
 

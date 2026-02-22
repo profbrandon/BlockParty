@@ -6,6 +6,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "Reticle.h"
 #include "Camera.h"
 #include "ObjectContainer.h"
 
@@ -27,7 +28,8 @@ struct KeyInfo
 class Window
 {
 private:
-	GLFWwindow* window;
+	GLFWwindow* window  = nullptr;
+	Reticle*    reticle = nullptr;
 
 	void(*it)(double deltaT) = nullptr;
 
@@ -56,6 +58,8 @@ public:
 	void bindCursorClick(void (*onClick)(double xPos, double yPos));
 
 	void setCursorMode(bool onOrOff);
+
+	void setReticle(Reticle* reticle);
 
 	bool getCursorMode();
 

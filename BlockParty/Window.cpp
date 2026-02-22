@@ -56,6 +56,10 @@ void doNothing()
 }
 
 
+
+
+
+
 Window::Window(GLFWwindow* window, int width, int height)
 	: window(window)
 {
@@ -102,12 +106,17 @@ void Window::enterLoop(Camera* camera, ObjectContainer* container)
 
 		for (Object* object : objects)
 		{
-			glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), object->getPosition());
-
 			object->getProgram()->setMatrix4f("view", viewMatrix);
 			object->getProgram()->setMatrix4f("proj", projMatrix);
 
 			object->getModel()->draw();
+		}
+
+
+		if (this->reticle != nullptr) {
+			this->reticle->getProgram()->use();
+			this->reticle->getProgram()->setMatrix4f("proj", glm::scale(glm::mat4(1.0f), glm::vec3((float) window_height / window_width, 1.0f, 0.0f)));
+			this->reticle->draw();
 		}
 
 
@@ -157,6 +166,12 @@ void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
 void Window::bindCursorClick(void (*onClick)(double xPos, double yPos))
 {
 	clickCallback = onClick;
+}
+
+
+void Window::setReticle(Reticle* reticle)
+{
+	this->reticle = reticle;
 }
 
 

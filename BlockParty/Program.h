@@ -16,6 +16,8 @@ private:
 public:
 	const unsigned int id;
 
+	~Program();
+
 	void use();
 
 	void setBool(const std::string& name, bool value);

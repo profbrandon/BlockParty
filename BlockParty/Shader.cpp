@@ -11,7 +11,13 @@
 Shader::Shader(unsigned int id) : id(id) 
 { 
 
-};
+}
+
+
+Shader::~Shader()
+{
+	glDeleteShader(this->id);
+}
 
 
 Shader* Shader::compileShader(const char* shaderSource, unsigned int shaderType)

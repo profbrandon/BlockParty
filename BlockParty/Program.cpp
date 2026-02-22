@@ -14,6 +14,12 @@ Program::Program(unsigned int id)
 }
 
 
+Program::~Program()
+{
+	glDeleteProgram(this->id);
+}
+
+
 void Program::use()
 {
 	glUseProgram(this->id);
