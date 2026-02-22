@@ -9,7 +9,8 @@
 class Object
 {
 protected:
-	bool selected = false;
+	bool selected  = false;
+	bool removable = true;
 
 	glm::vec3 color;
 	glm::vec3 position;
@@ -25,9 +26,13 @@ public:
 
 	bool isSelected();
 
+	bool isRemovable();
+
 	void setPosition(float x, float y, float z);
 
 	virtual void setSelected(bool selected);
+
+	virtual void setRemovable(bool removable);
 
 	Program* getProgram();
 

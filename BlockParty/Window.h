@@ -55,7 +55,7 @@ public:
 
 	void bindCursorMovement(void (*onMove)(double xPos, double yPos));
 
-	void bindCursorClick(void (*onClick)(double xPos, double yPos));
+	void bindCursorClick(void (*onClick)(int button, double xPos, double yPos));
 
 	void setCursorMode(bool onOrOff);
 

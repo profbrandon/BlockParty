@@ -22,6 +22,12 @@ bool Object::isSelected()
 }
 
 
+bool Object::isRemovable()
+{
+	return this->removable;
+}
+
+
 glm::vec3 Object::getPosition()
 {
 	return this->position;
@@ -37,6 +43,12 @@ void Object::setSelected(bool selected)
 void Object::setPosition(float x, float y, float z)
 {
 	this->position = glm::vec3(x, y, z);
+}
+
+
+void Object::setRemovable(bool removable)
+{
+	this->removable = removable;
 }
 
 

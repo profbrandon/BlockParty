@@ -7,7 +7,13 @@
 
 
 
-void defaultCallback(double x, double y)
+void defaultCursorCallback(double x, double y)
+{
+
+}
+
+
+void defaultClickCallback(int button, double x, double y)
 {
 
 }
@@ -21,9 +27,9 @@ static double mousePosY = 0;
 static int window_width  = 0;
 static int window_height = 0;
 
-static void (*cursorCallback)(double x, double y) = defaultCallback;
+static void (*cursorCallback)(double x, double y) = defaultCursorCallback;
 
-static void (*clickCallback)(double x, double y) = defaultCallback;
+static void (*clickCallback)(int button, double x, double y) = defaultClickCallback;
 
 
 void frameBufferResizeCallback(GLFWwindow* window, int width, int height)
@@ -45,8 +51,8 @@ void cursorPositionCallback(GLFWwindow* window, double x, double y)
 
 void cursorClickCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		clickCallback(mousePosX, mousePosY);
+	if (action == GLFW_PRESS)
+		clickCallback(button, mousePosX, mousePosY);
 }
 
 
@@ -159,13 +165,13 @@ void Window::bindKeyRelease(unsigned int keyCode, double wait, void (*onRelease)
 
 void Window::bindCursorMovement(void (*onMove)(double xPos, double yPos))
 {
-	cursorCallback = onMove;
+	cursorCallback = (onMove == nullptr) ? defaultCursorCallback : onMove;
 }
 
 
-void Window::bindCursorClick(void (*onClick)(double xPos, double yPos))
+void Window::bindCursorClick(void (*onClick)(int button, double xPos, double yPos))
 {
-	clickCallback = onClick;
+	clickCallback = (onClick == nullptr) ? defaultClickCallback : onClick;
 }
 
 

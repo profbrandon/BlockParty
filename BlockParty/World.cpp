@@ -3,6 +3,14 @@
 #include "World.h"
 
 #include <algorithm>
+#include <iostream>
+
+
+World::~World()
+{
+	for (auto ptr : this->objects)
+		delete ptr;
+}
 
 
 void World::addObject(Object* object)
@@ -25,10 +33,21 @@ void World::setCamera(Camera* camera)
 
 void World::removeObject(unsigned int id)
 {
-	std::remove_if(
-		this->objects.begin(), 
-		this->objects.end(), 
-		[id](auto ptr) { return ptr->id == id; });
+	auto end = 
+		std::remove_if(
+			this->objects.begin(), 
+			this->objects.end(), 
+			[id](Object* ptr) {
+				if (ptr->id == id && ptr->isRemovable())
+				{
+					delete ptr;
+					return true;
+				}
+				else
+					return false;
+			});
+
+	this->objects.erase(end, this->objects.end());
 }
 
 

@@ -21,10 +21,15 @@
 #define STRAFE_SPEED    5.0
 
 
+
 Window* window = nullptr;
 Light*  light1 = nullptr;
 Camera* camera = new Camera(MIN_PITCH, MAX_PITCH);
 World*  world  = new World();
+
+
+Program* theCubeProgram = nullptr;
+
 
 void w_press(double deltaT);
 void a_press(double deltaT);
@@ -34,7 +39,7 @@ void x_press(double deltaT);
 
 void cursorPositionCallback(double x, double y);
 
-void cursorClickCallback(double x, double y);
+void cursorClickCallback(int button, double x, double y);
 
 void iteration(double deltaT);
 
@@ -46,6 +51,8 @@ bool cleanUpNecessary(std::vector<void*> ptrs);
 
 int main()
 {
+	std::srand(time({}));
+
 	window = Window::initializeWindow(DEFAULT_WIDTH, DEFAULT_HEIGHT, APP_NAME);
 
 	if (window == nullptr) 
@@ -85,9 +92,12 @@ int main()
 	if (cleanUpNecessary(collect))
 		return EXIT_FAILURE;
 
+	theCubeProgram = cubeProgram;
+
 	std::vector<Program*> lightAffectedPrograms{ cubeProgram };
 
 	light1 = new Light( 0,  3,  0,  1.0f, 1.0f, 1.0f, 1.0f, lightProgram, lightAffectedPrograms);
+	light1->setRemovable(false);
 
 	Reticle* reticle = new Reticle(reticleProgram);
 
@@ -105,6 +115,8 @@ int main()
 	world->setCamera(camera);
 
 	window->setReticle(reticle);
+
+	collect.push_back(reticle);
 
 	window->bindKeyPress('W', 0.02f, w_press);
 	window->bindKeyPress('A', 0.02f, a_press);
@@ -203,33 +215,47 @@ void cursorPositionCallback(double x, double y)
 }
 
 
-void cursorClickCallback(double x, double y)
+void cursorClickCallback(int button, double x, double y)
 {
+	if (button != GLFW_MOUSE_BUTTON_LEFT && button != GLFW_MOUSE_BUTTON_RIGHT)
+		return;
+
 	float minDist = 100000.0f;
 
-	Object* toSelect = nullptr;
+	Object*   toSelect = nullptr;
+	Triangle* triangle = nullptr;
 
 	for (Object* obj : world->getObjects())
 	{
-		glm::vec3 oPos = obj->getPosition();
-		glm::vec3 cPos = camera->getPosition();
+		auto pair = obj->getModel()->rayIntersection(camera->getPosition(), camera->getFront());
 
-		glm::vec3 front = camera->getFront();
-
-		if (glm::length(glm::cross(front, glm::normalize(cPos - oPos))) < 0.08)
+		if (pair != nullptr && pair->second < minDist)
 		{
-			float dist = glm::length(cPos - oPos);
-
-			if (dist < minDist)
-			{
-				minDist = dist;
-				toSelect = obj;
-			}
+			toSelect = obj;
+			triangle = pair->first;
+			minDist  = pair->second;
+			delete pair;
 		}
 	}
 
-	if (toSelect != nullptr)
-		toSelect->setSelected(!toSelect->isSelected());
+	if (toSelect != nullptr && button == GLFW_MOUSE_BUTTON_RIGHT)
+	{
+		world->removeObject(toSelect->id);
+		return;
+	}
+
+	if (triangle != nullptr && theCubeProgram != nullptr)
+	{
+		glm::vec3 norm = triangle->getNormal();
+		glm::vec3 pos = toSelect->getPosition() + norm;
+
+		float r = static_cast<float>(std::rand()) / RAND_MAX;
+		float g = static_cast<float>(std::rand()) / RAND_MAX;
+		float b = static_cast<float>(std::rand()) / RAND_MAX;
+
+		world->addObject(new Cube(pos.x, pos.y, pos.z, r, g, b, theCubeProgram));
+		return;
+	}
 }
 
 

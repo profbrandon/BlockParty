@@ -8,6 +8,9 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/intersect.hpp"
+
 
 Model::Model(
 	float*        vertices,
@@ -38,6 +41,8 @@ Model::Model(
 		return;
 	}
 
+	glm::mat4 model = this->getModelMatrix();
+
 	for (int t = 0; t < num_indices; t += 3)
 	{
 		float* v1_ptr_x = vertices + 3 * indices[t];
@@ -56,7 +61,10 @@ Model::Model(
 		glm::vec3 v2 (*v2_ptr_x, *v2_ptr_y, *v2_ptr_z);
 		glm::vec3 v3 (*v3_ptr_x, *v3_ptr_y, *v3_ptr_z);
 
-		glm::vec3 normal = glm::normalize(glm::cross(v3 - v1, v2 - v1));
+		Triangle* triangle = new Triangle( v1, v2, v3 );
+		triangles.push_back(triangle);
+
+		glm::vec3 normal = triangle->getNormal();
 
 
 		int j = 3 * 2 * t;
@@ -106,6 +114,9 @@ Model::~Model()
 {
 	glDeleteVertexArrays(1, &this->vao);
 	glDeleteBuffers(1, &this->vbo);
+
+	for (auto triangle : this->triangles)
+		delete triangle;
 }
 
 
@@ -126,14 +137,65 @@ unsigned int Model::getVertexArrayObject()
 	return this->vao;
 }
 
+
+glm::mat4 Model::getModelMatrix()
+{
+	return glm::translate(glm::mat4(1.0f), this->position);
+}
+
+
 void Model::draw()
 {
 	this->shaderProgram->setBool("selected", this->selected);
 	this->shaderProgram->setFloat3("objColor", this->color.r, this->color.g, this->color.b);
-	this->shaderProgram->setMatrix4f("model", glm::translate(glm::mat4(1.0f), this->position));
+	this->shaderProgram->setMatrix4f("model", this->getModelMatrix());
 
 	glUseProgram(this->shaderProgram->id);
 	glBindVertexArray(this->vao);
 	glDrawArrays(GL_TRIANGLES, 0, i_size / (sizeof(unsigned int)));
 	glBindVertexArray(0);
+}
+
+
+std::pair<Triangle*, float>* Model::rayIntersection(glm::vec3 rayStart, glm::vec3 rayDir)
+{
+	float     minDistance = 0;
+	Triangle* target      = nullptr;
+
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), this->position);
+
+	for (auto t : this->triangles)
+	{
+		glm::vec2 temp;
+		float     dist;
+
+		glm::vec3 v1 = glm::vec3(model * glm::vec4(t->v1, 1.0f));
+		glm::vec3 v2 = glm::vec3(model * glm::vec4(t->v2, 1.0f));
+		glm::vec3 v3 = glm::vec3(model * glm::vec4(t->v3, 1.0f));
+
+		glm::vec3 avg = (v1 + v2 + v3) * (1.0f / 3.0f);
+
+		bool intersects =
+			glm::intersectRayTriangle(
+				rayStart,
+				rayDir,
+				v1,
+				v2,
+				v3,
+				temp,
+				dist)
+			&& glm::dot(rayDir, rayDir - t->getNormal()) > glm::dot(rayDir, rayDir + t->getNormal())
+			&& glm::dot(rayDir, avg - rayStart) > glm::dot(rayDir, rayStart - avg);
+
+		if (intersects && (target == nullptr || dist < minDistance))
+		{
+			target = t;
+			minDistance = dist;
+		}
+	}
+
+	if (target != nullptr)
+		return new std::pair<Triangle*, float>(target, minDistance);
+	else
+		return nullptr;
 }

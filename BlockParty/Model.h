@@ -3,6 +3,7 @@
 #include "glm/vec3.hpp"
 
 #include "Program.h"
+#include "Triangle.h"
 
 class Model
 {
@@ -19,6 +20,8 @@ protected:
 	Program*     shaderProgram;
 
 public:
+	std::vector<Triangle*> triangles;
+
 	Model(
 		float*        vertices,
 		unsigned int  v_size,
@@ -36,6 +39,10 @@ public:
 	virtual void setSelected(bool selected);
 
 	unsigned int getVertexArrayObject();
+
+	glm::mat4 getModelMatrix();
+
+	std::pair<Triangle*, float>* rayIntersection(glm::vec3 rayStart, glm::vec3 rayDir);
 	
 	virtual void draw();
 };

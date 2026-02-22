@@ -18,7 +18,8 @@ Light::Light(
 	  intensity(intensity),
 	  affectedPrograms(affectedPrograms)
 {
-	this->model = new LightModel(this->intensity, this->color, this->position, this->shaderProgram, this->affectedPrograms);
+	this->model     = new LightModel(this->intensity, this->color, this->position, this->shaderProgram, this->affectedPrograms);
+	this->removable = false;
 }
 
 

@@ -15,6 +15,8 @@ private:
 	std::vector<Object*> objects{};
 
 public:
+	~World();
+
 	void addObject(Object* object);
 
 	void setCamera(Camera* camera);
